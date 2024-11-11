@@ -6,6 +6,7 @@ from rest_framework.decorators import api_view
 from rest_framework.response import Response
 from django.core.files.storage import default_storage
 from django.core.files.base import ContentFile
+from django.shortcuts import render, HttpResponse, redirect
 # Create your views here.
 
 
@@ -20,3 +21,6 @@ def upload_image(request):
     file_path = default_storage.save('uploaded_images/PartialScreenshot.png', ContentFile(image_file.read()))
 
     return Response({'message': 'success', 'file_path': file_path}, status=200)
+
+def index(request):
+    return HttpResponse("Communication start")

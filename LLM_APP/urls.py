@@ -17,5 +17,6 @@ from django.contrib import admin
 from django.urls import path
 from LLM_APP import views
 urlpatterns = [
+    path('', views.index),
     path('upload_image/', views.upload_image)
 ]
