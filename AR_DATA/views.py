@@ -96,7 +96,7 @@ places = [
 ]
 
 for i in range(4):
-    stamp_table.objects.create(key=i, stamp_count=0, store_count = 0, tour_count =0, secret_count=0)
+    User_data.objects.create(key=i, stamp_count=0, store_count = 0, tour_count =0, secret_count=0)
     print(f'key  : {i} created')
 
 state_dic = dict()
