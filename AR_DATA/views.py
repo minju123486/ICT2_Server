@@ -105,41 +105,41 @@ places = [
 import json
 
 # JSON 파일 경로
-json_file_path = os.path.join(settings.BASE_DIR,'data.json')
+# json_file_path = os.path.join(settings.BASE_DIR,'data.json')
 
-# JSON 파일 열기
-with open(json_file_path, 'r', encoding='utf-8') as f:
-    data = json.load(f)
+# # JSON 파일 열기
+# with open(json_file_path, 'r', encoding='utf-8') as f:
+#     data = json.load(f)
 
-# # 데이터 추가하기
-cnt = 0
-for item in data['Sheet1']:
-    # Tour_place 모델에 저장
-    try:
-        Tour_place.object.get(tour_id=cnt)
-        print("Already created")
+# # # 데이터 추가하기
+# cnt = 0
+# for item in data['Sheet1']:
+#     # Tour_place 모델에 저장
+#     try:
+#         Tour_place.object.get(tour_id=cnt)
+#         print("Already created")
         
-    except:
-        Tour_place.objects.create(
-            tour_id = cnt,
-            place=item['place'],
-            address=item['address'],
-            phone=str(item['phone']),  # phone 번호를 문자열로 저장
-            lat=str(item['lat']),
-            lng=str(item['lng']),
-            text=item['text'][:1000]  # text 필드는 최대 1000자로 제한
-        )
-    cnt += 1
+#     except:
+#         Tour_place.objects.create(
+#             tour_id = cnt,
+#             place=item['place'],
+#             address=item['address'],
+#             phone=str(item['phone']),  # phone 번호를 문자열로 저장
+#             lat=str(item['lat']),
+#             lng=str(item['lng']),
+#             text=item['text'][:1000]  # text 필드는 최대 1000자로 제한
+#         )
+#     cnt += 1
 
-print("Data added successfully!")
+# print("Data added successfully!")
 
-for i in range(4):
-    try:
-        User_data.objects.get(key=i)
-        print("Already created")
-    except:
-        User_data.objects.create(key=i, stamp_count=0, store_count = 0, tour_count =0, secret_count=0)
-        print(f'key  : {i} created')
+# for i in range(4):
+#     try:
+#         User_data.objects.get(key=i)
+#         print("Already created")
+#     except:
+#         User_data.objects.create(key=i, stamp_count=0, store_count = 0, tour_count =0, secret_count=0)
+#         print(f'key  : {i} created')
 
 
 
