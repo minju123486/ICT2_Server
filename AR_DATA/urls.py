@@ -19,5 +19,6 @@ from AR_DATA import views
 urlpatterns = [
     path('', views.index),
     path('upload_image/', views.upload_image),
-    path('trasmit_image/', views.transmit_image)
+    path('trasmit_image/', views.transmit_image),
+    path('stamp_data/', views.stamp_data)
 ]

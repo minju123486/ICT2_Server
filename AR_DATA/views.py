@@ -10,7 +10,7 @@ from django.core.files.storage import default_storage
 from django.core.files.base import ContentFile
 from django.shortcuts import render, HttpResponse, redirect
 # Create your views here.
-from .models import User_data, Tour_place, Check, stamp_table
+from .models import User_data, Tour_place, Check, StampTable
 
 places = [
     "낙산사",
@@ -95,9 +95,39 @@ places = [
     "숲속의빈터"
 ]
 
+import json
+from .models import Tour_place  # your_app 부분을 실제 앱 이름으로 변경
+
+# JSON 파일 경로
+json_file_path = 'data.json'
+
+# JSON 파일 열기
+with open(json_file_path, 'r', encoding='utf-8') as f:
+    data = json.load(f)
+
+# 데이터 추가하기
+for item in data['Sheet1']:
+    # Tour_place 모델에 저장
+    try:
+        Tour_place.objects.create(
+            place=item['place'],
+            address=item['address'],
+            phone=str(item['phone']),  # phone 번호를 문자열로 저장
+            lat=str(item['lat']),
+            lng=str(item['lng']),
+            text=item['text'][:1000]  # text 필드는 최대 1000자로 제한
+        )
+    except:
+        print("Already created")
+
+print("Data added successfully!")
+
 for i in range(4):
-    User_data.objects.create(key=i, stamp_count=0, store_count = 0, tour_count =0, secret_count=0)
-    print(f'key  : {i} created')
+    try:
+        User_data.objects.create(key=i, stamp_count=0, store_count = 0, tour_count =0, secret_count=0)
+        print(f'key  : {i} created')
+    except:
+        print("Already created")
 
 state_dic = dict()
 for i in range(len(places)):
@@ -123,7 +153,7 @@ def upload_image(request):
         user_data = User_data.objects.get(key=sign_id)
         user_data.stamp_count += 1
         user_data.save()
-        new_entry = stamp_table.objects.create(key=sign_id, tour_id=tour_num, num = user_data.stamp_count)
+        new_entry = StampTable.objects.create(key=sign_id, tour_id=tour_num, num = user_data.stamp_count)
         file_path = default_storage.save(f'{sign_id}/{user_data.stamp_count}.png', ContentFile(image_file.read()))
 
         return Response({'message': 'success', 'file_path': file_path}, status=200)
@@ -143,6 +173,23 @@ def transmit_image(request):
         return response
     else:
         raise Http404("File not found")
+
+@api_view(['POST'])
+def stamp_data(request):
+    sign_id = request.data.get('id')
+    
+    entries = StampTable.objects.filter(key=sign_id).order_by('timestamp')
+    
+    entry_list = [
+        {
+            "tour_id": entry.tour_id,
+            "location" : Tour_place.objects.get(tour_id=entry.tour_id).text,
+            "timestamp": entry.timestamp
+        }
+        for entry in entries
+    ]
+    return Response(entry_list, status=200)
+
 
 
 def index(request):

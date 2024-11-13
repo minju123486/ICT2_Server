@@ -22,7 +22,8 @@ class Check(models.Model):
     key = models.IntegerField()
     tour_id = models.IntegerField()
     
-class stamp_table(models.Model):
+class StampTable(models.Model):
     key = models.IntegerField()
     tour_id = models.CharField(max_length=50)
     num = models.IntegerField()
+    timestamp = models.DateTimeField(auto_now_add=True)
