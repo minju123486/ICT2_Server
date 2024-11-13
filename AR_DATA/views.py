@@ -133,13 +133,13 @@ import json
 
 print("Data added successfully!")
 
-for i in range(4):
-    try:
-        User_data.objects.get(key=i)
-        print("Already created")
-    except:
-        User_data.objects.create(key=i, stamp_count=0, store_count = 0, tour_count =0, secret_count=0)
-        print(f'key  : {i} created')
+# for i in range(4):
+#     try:
+#         User_data.objects.get(key=i)
+#         print("Already created")
+#     except:
+#         User_data.objects.create(key=i, stamp_count=0, store_count = 0, tour_count =0, secret_count=0)
+#         print(f'key  : {i} created')
 
 
 
