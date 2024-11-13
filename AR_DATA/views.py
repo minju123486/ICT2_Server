@@ -219,6 +219,11 @@ def mock_stamp_data(request):
             "timestamp": timezone.now()
         })
         count += 2
+    entry_list.append({
+            "tour_id": i,
+            "location" : "하하하하하하하하",
+            "timestamp": timezone.now()
+        })
     print(entry_list)
     return Response(entry_list, status=200)
 
