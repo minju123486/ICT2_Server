@@ -324,7 +324,7 @@ def LLM_QUEST(request):
             count += 1
     for i in lst:
         print(i)
-    return Response(ans, status=200)
+    return Response(lst, status=200)
 
 def index(request):
     return HttpResponse("Communication start")
