@@ -233,7 +233,8 @@ def mock_stamp_data(request):
 
 
 GOOGLE_API_KEY = ""
-
+df = pd.read_csv('yangdata.csv')
+print(df)
 @api_view(['POST'])
 def LLM_QUEST(request):
     df = pd.read_csv('yangdata.csv')
@@ -313,6 +314,8 @@ def LLM_QUEST(request):
                 dic['type'] = 3
             dic['langtitude'] = langtitude
             dic['longtitude'] = longtitude
+            dic['address'] = Tour_place.objects.get(place=dic['place']).address
+            dic['phone'] = Tour_place.objects.get(place=dic['place']).phone
             history.objects.create(key=request.data.get('id'), tour_id=iid, num = count, place = dic['place'], text = Tour_place.objects.get(place=dic['place']).text)
             lst.append(dic)
             dic = dict()
