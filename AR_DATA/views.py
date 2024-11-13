@@ -294,8 +294,10 @@ def LLM_QUEST(request):
     ans = list((response.text).split('\n'))
     lst = []
     dic = dict()
+    print("여기까진만 ...")
     history.objects.filter(key=1).delete()
     count = 1
+    print("여기까진 옴..")
     for i in ans:
         if i[:3] == '장소의':
             dic['place'] = i[8::]
