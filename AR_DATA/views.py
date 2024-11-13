@@ -197,7 +197,7 @@ def stamp_data(request):
     entry_list = [
         {
             "tour_id": entry.tour_id,
-            "location" : Tour_place.objects.get(tour_id=entry.tour_id).text,
+            "location" : Tour_place.objects.get(tour_id=entry.tour_id).place,
             "timestamp": entry.timestamp
         }
         for entry in entries
@@ -300,12 +300,12 @@ def LLM_QUEST(request):
     print("여기까진 옴..")
     for i in ans:
         if i[:3] == '장소의':
-            dic['place'] = i[8::]
+            dic['name'] = i[8::]
         elif i[:2] == '설명':
             dic['text'] = i[4::]
-            langtitude = Tour_place.objects.get(place=dic['place']).lat
-            longtitude = Tour_place.objects.get(place=dic['place']).lng
-            iid = Tour_place.objects.get(place=dic['place']).tour_id
+            langtitude = Tour_place.objects.get(place=dic['name']).lat
+            longtitude = Tour_place.objects.get(place=dic['name']).lng
+            iid = Tour_place.objects.get(place=dic['name']).tour_id
             if iid <= 19:
                 dic['type'] = 0
             elif iid <= 39:
@@ -316,9 +316,9 @@ def LLM_QUEST(request):
                 dic['type'] = 3
             dic['langtitude'] = langtitude
             dic['longtitude'] = longtitude
-            dic['address'] = Tour_place.objects.get(place=dic['place']).address
-            dic['phone'] = Tour_place.objects.get(place=dic['place']).phone
-            history.objects.create(key=request.data.get('id'), tour_id=iid, num = count, place = dic['place'], text = Tour_place.objects.get(place=dic['place']).text)
+            dic['address'] = Tour_place.objects.get(place=dic['name']).address
+            dic['phone'] = Tour_place.objects.get(place=dic['name']).phone
+            history.objects.create(key=request.data.get('id'), tour_id=iid, num = count, place = dic['name'], text = Tour_place.objects.get(place=dic['name']).text)
             lst.append(dic)
             dic = dict()
             count += 1
