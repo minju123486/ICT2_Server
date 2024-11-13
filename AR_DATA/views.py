@@ -215,7 +215,7 @@ def mock_stamp_data(request):
     for i in range(4):
         entry_list.append({
             "tour_id": i,
-            "location" : Tour_place.objects.get(tour_id=count).place,
+            "location" : "ASDASDSDASADASD",
             "timestamp": timezone.now()
         })
         count += 2
