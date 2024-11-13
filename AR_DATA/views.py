@@ -99,8 +99,6 @@ state_dic = dict()
 for i in range(len(places)):
     state_dic[places[i]] = i
 
-for i in range(4):
-    User_data.objects.create(key=i, stamp_count=0, store_count = 0, tour_count = 0, secret_count = 0)
 @api_view(['POST'])
 def upload_image(request):
     print("Request come")
@@ -113,14 +111,14 @@ def upload_image(request):
     tour_num = request.data.get('tour_num')
     
     try:
-        existing_entry = Check.objects.get(key=sign_id, tour_num=tour_num)
+        existing_entry = Check.objects.get(key=sign_id, tour_id=tour_num)
         return Response({'error': 'This entry already exists.'}, status=400)
     except:
-        new_entry = Check.objects.create(key=sign_id, tour_num=tour_num)
+        new_entry = Check.objects.create(key=sign_id, tour_id=tour_num)
         user_data = User_data.objects.get(key=sign_id)
         user_data.stamp_count += 1
         user_data.save()
-        new_entry = stamp_table.objects.create(key=sign_id, tour_num=tour_num, num = user_data.stamp_count)
+        new_entry = stamp_table.objects.create(key=sign_id, tour_id=tour_num, num = user_data.stamp_count)
         file_path = default_storage.save(f'{sign_id}/{user_data.stamp_count}.png', ContentFile(image_file.read()))
 
         return Response({'message': 'success', 'file_path': file_path}, status=200)
