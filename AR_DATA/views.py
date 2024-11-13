@@ -219,6 +219,7 @@ def mock_stamp_data(request):
             "timestamp": timezone.now()
         })
         count += 2
+    print(entry_list)
     return Response(entry_list, status=200)
 
 
