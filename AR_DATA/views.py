@@ -9,8 +9,11 @@ from rest_framework.response import Response
 from django.core.files.storage import default_storage
 from django.core.files.base import ContentFile
 from django.shortcuts import render, HttpResponse, redirect
+import pandas as pd
+import time
+import google.generativeai as genai
 # Create your views here.
-from .models import User_data, Tour_place, Check, StampTable
+from .models import User_data, Tour_place, Check, StampTable, history
 from django.conf import settings
 
 places = [
@@ -165,7 +168,7 @@ def upload_image(request):
         user_data.stamp_count += 1
         user_data.save()
         new_entry = StampTable.objects.create(key=sign_id, tour_id=tour_num, num = user_data.stamp_count)
-        file_path = default_storage.save(f'{sign_id}/{user_data.stamp_count}.png', ContentFile(image_file.read()))
+        file_path = default_storage.save(f'uploads/{sign_id}/{user_data.stamp_count}.png', ContentFile(image_file.read()))
 
         return Response({'message': 'success', 'file_path': file_path}, status=200)
 
@@ -202,6 +205,7 @@ def stamp_data(request):
     return Response(entry_list, status=200)
 
 from django.utils import timezone
+
 @api_view(['POST'])
 def mock_stamp_data(request):
     sign_id = request.data.get('id')
@@ -227,6 +231,95 @@ def mock_stamp_data(request):
     print(entry_list)
     return Response(entry_list, status=200)
 
+
+GOOGLE_API_KEY = ""
+
+@api_view(['POST'])
+def LLM_QUEST(request):
+    df = pd.read_csv('yangdata.csv')
+    genai.configure(api_key=GOOGLE_API_KEY)
+
+    model = genai.GenerativeModel(
+        'gemini-1.5-flash',
+        system_instruction=""" 
+            You are an AI travel guide that introduces tourist attractions and other locations in the Yangyang region of Korea.
+            Your task is to recommend a one-day itinerary based on the user's preferences.
+            The output should include place names, a brief description, and six itineraries for a one-day trip.
+            The output text must not contain any Markdown marks or special symbols.
+            The travel itinerary must include two visits to tourist attractions, one lodging, two visits to restaurants, and one visit to a cafe.
+            When organizing a course, restaurant visits should be organized equally, taking lunch and dinner into account.
+            When planning your course, you should never visit tourist attractions or restaurants all at once, but visit them evenly..
+            For the travel course, you only need to print out one course consisting of a total of 6 locations.
+
+        """
+    )
+
+    # 여행 코스 추천 요청
+    start_time = time.time()
+
+    # 사용자 취향에 대한 설명 (예: 해변, 자연, 휴식 등)
+    user_preferences = "저는 해변을 좋아하고, 자연을 느낄 수 있는 곳을 선호해요. 먼저 점심을 먹고 시작을 하고싶어요. 숙소는 반드시 마지막에 방문하고 싶어요. 저녁에는 해산물 식사를 하고 싶어요."
+
+    # 각 장소의 정보를 모델에 전달할 때 사용할 텍스트 포맷
+    places_text = ""
+    for _, row in df.iterrows():
+        places_text += f"장소 이름: {row['place']}\n종류: {row['type']}\n설명: {row['text']}\n주소: {row['address']}\n위도: {row['lat']}\n경도: {row['lng']}\n\n"
+
+    user_prompt = f"""
+        안녕하세요! 저는 양양에서 추천 여행 코스를 찾고 있어요.
+        제 취향은: {user_preferences}
+        
+        출력결과는 각 코스에 대해 코스n \n 장소의 이름 : \n 설명 : \n\n 으로 출력 주세요.
+        장소의 이름과 설명은 엔터로 구분해 주세요.
+        각 코스에 출력은 반드시 장소의 이름과 설명만 있어야 해.
+
+        다음에 나열된 장소들의 정보를 참고하여, 여행 코스를 추천해 주세요.
+        {places_text}
+    """
+
+    # 모델에게 여행 경로를 요청
+    response = model.generate_content(
+        user_prompt,
+        generation_config=genai.types.GenerationConfig(
+            candidate_count=1,
+            temperature=1.0)
+    )
+
+    print(response.text)
+
+    end_time = time.time()
+    execution_time = end_time - start_time
+    print(f"실행 시간: {execution_time:.2f} 초")
+    ans = list((response.text).split('\n'))
+    lst = []
+    dic = dict()
+    history.objects.filter(key=1).delete()
+    count = 1
+    for i in ans:
+        if i[:3] == '장소의':
+            dic['place'] = i[8::]
+        elif i[:2] == '설명':
+            dic['text'] = i[4::]
+            langtitude = Tour_place.objects.get(place=dic['place']).lat
+            longtitude = Tour_place.objects.get(place=dic['place']).lng
+            iid = Tour_place.objects.get(place=dic['place']).tour_id
+            if iid <= 19:
+                dic['type'] = 0
+            elif iid <= 39:
+                dic['type'] = 1
+            elif iid <= 59:
+                dic['type'] = 2
+            elif iid <= 79:
+                dic['type'] = 3
+            dic['langtitude'] = langtitude
+            dic['longtitude'] = longtitude
+            history.objects.create(key=request.data.get('id'), tour_id=iid, num = count, place = dic['place'], text = Tour_place.objects.get(place=dic['place']).text)
+            lst.append(dic)
+            dic = dict()
+            count += 1
+    for i in lst:
+        print(i)
+    return Response(ans, status=200)
 
 def index(request):
     return HttpResponse("Communication start")

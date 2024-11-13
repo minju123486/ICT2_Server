@@ -24,6 +24,13 @@ class Check(models.Model):
     
 class StampTable(models.Model):
     key = models.IntegerField()
-    tour_id = models.CharField(max_length=50)
+    tour_id = models.IntegerField()
     num = models.IntegerField()
     timestamp = models.DateTimeField(auto_now_add=True)
+    
+class history(models.Model):
+    num = models.IntegerField()
+    tour_id = models.IntegerField()
+    place = models.CharField(max_length=50)
+    text = models.CharField(max_length=1000)
+    
