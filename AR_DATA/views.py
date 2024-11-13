@@ -95,6 +95,9 @@ places = [
     "숲속의빈터"
 ]
 
+for i in range(4):
+    stamp_table.objects.create(key=i, stamp_count=0, store_count = 0, tour_count =0, secret_count=0)
+
 state_dic = dict()
 for i in range(len(places)):
     state_dic[places[i]] = i
