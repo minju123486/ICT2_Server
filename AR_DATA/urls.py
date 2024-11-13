@@ -17,5 +17,7 @@ from django.contrib import admin
 from django.urls import path
 from AR_DATA import views
 urlpatterns = [
-    path('upload_image/', views.upload_image)
+    path('', views.index),
+    path('upload_image/', views.upload_image),
+    path('trasmit_image/', views.transmit_image)
 ]
