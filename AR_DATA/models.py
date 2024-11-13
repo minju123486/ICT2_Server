@@ -29,6 +29,7 @@ class StampTable(models.Model):
     timestamp = models.DateTimeField(auto_now_add=True)
     
 class history(models.Model):
+    key = models.IntegerField()
     num = models.IntegerField()
     tour_id = models.IntegerField()
     place = models.CharField(max_length=50)
