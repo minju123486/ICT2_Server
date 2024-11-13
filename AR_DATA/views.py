@@ -109,6 +109,7 @@ def upload_image(request):
     image_file = request.FILES['file']
     sign_id = request.data.get('id')
     tour_num = request.data.get('tour_num')
+    print("id" , sign_id, "tour_num", tour_num)
     
     try:
         existing_entry = Check.objects.get(key=sign_id, tour_id=tour_num)
