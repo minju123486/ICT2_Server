@@ -170,7 +170,7 @@ def upload_image(request):
         user_data.stamp_count += 1
         user_data.save()
         new_entry = StampTable.objects.create(key=sign_id, tour_id=tour_num, num = user_data.stamp_count)
-        file_path = default_storage.save(f'uploads/{sign_id}/{user_data.stamp_count}.png', ContentFile(image_file.read()))
+        file_path = default_storage.save(f'{sign_id}/{user_data.stamp_count}.png', ContentFile(image_file.read()))
 
         return Response({'message': 'success', 'file_path': file_path}, status=200)
 
