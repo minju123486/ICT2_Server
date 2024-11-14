@@ -343,7 +343,7 @@ def history_view(request):
         text_ = his_entry.text
         num_ = his_entry.num
         dic['location'] = place_
-        dic['description'] - text_
+        dic['description'] = text_
         dic['tourId'] = tour_id_
         
         try:
