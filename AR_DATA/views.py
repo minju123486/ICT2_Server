@@ -420,6 +420,8 @@ def leaderboard(request):
         dic['userName'] = name_list[int(i.key)]
         dic['collectedStamp'] = i.stamp_count
         lst.append(dic)
+    for i in lst:
+        print(i)
     return Response(lst, status=200)
         
         
