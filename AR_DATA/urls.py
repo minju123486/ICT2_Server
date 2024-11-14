@@ -22,5 +22,6 @@ urlpatterns = [
     path('trasmit_image/', views.transmit_image),
     path('stamp_data/', views.stamp_data),
     path('mock_stamp_data/', views.mock_stamp_data),
-    path('LLM_QUEST/', views.LLM_QUEST)
+    path('LLM_QUEST/', views.LLM_QUEST),
+    path('history_view/', views.history_view)
 ]
