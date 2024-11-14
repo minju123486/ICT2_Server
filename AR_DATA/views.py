@@ -359,6 +359,8 @@ def history_view(request):
             
         
         lst.append(dic)
+    for k in lst:
+        print(k)
     return Response(lst, status=200)
             
         
