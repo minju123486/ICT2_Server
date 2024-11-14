@@ -190,17 +190,26 @@ def transmit_image(request):
 @api_view(['POST'])
 def stamp_data(request):
     sign_id = request.data.get('id')
-    
-    entries = StampTable.objects.filter(key=sign_id).order_by('timestamp')
-    
-    entry_list = [
-        {
-            "tour_id": entry.tour_id,
-            "location" : Tour_place.objects.get(tour_id=entry.tour_id).place,
-            "timestamp": entry.timestamp
-        }
-        for entry in entries
-    ]
+    entry_list =[]
+    for i in range(80):
+        dic = dict()
+        try: # tour_id, location, timestamp, isCollected;
+            stamp_entry = StampTable.objects.get(key = sign_id, tour_id = i)
+            tour_entry = Tour_place(id = i)
+            dic['tour_id'] = i
+            dic['location'] = tour_entry.place
+            dic['timestamp'] = stamp_entry.timestamp
+            dic['isCollected'] = True
+        except:
+            dic['tour_id'] = i
+            dic['location'] = tour_entry.place
+            dic['timestamp'] = None
+            dic['isCollected'] = False
+        entry_list.append(dic)
+    for i in entry_list:
+        print(i)
+            
+            
     return Response(entry_list, status=200)
 
 from django.utils import timezone
