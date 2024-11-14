@@ -328,5 +328,51 @@ def LLM_QUEST(request):
         print(i)
     return Response(lst, status=200)
 
+
+
+@api_view(['POST'])
+def history_view(request):
+    id = request.data.get('id')
+    filtered_history = history.objects.filter(key=request.data.get('id'))
+    
+    lst = []
+    
+    for his_entry in filtered_history:
+        dic = dict()
+        tour_id_ = his_entry.tour_id
+        place_ = his_entry.place
+        text_ = his_entry.text
+        num_ = his_entry.num
+        dic['location'] = place_
+        dic['description'] - text_
+        dic['tourId'] = tour_id_
+        
+        try:
+            entry_stamp = StampTable.objects.get(key = id, tour_id = tour_id_)
+            dic['isCollected'] = True
+            dic['timestamp'] = entry_stamp.timestamp
+            dic['imageIdx'] = entry_stamp.num
+            
+        except:
+            dic['isCollected'] = False
+            dic['timestamp'] = None
+            dic['imageIdx'] = None
+            
+        
+        lst.append(dic)
+    return Response(lst, status=200)
+            
+        
+        
+        
+        
+        
+        
+    
+    
+    
+    
+    
+    
 def index(request):
     return HttpResponse("Communication start")
