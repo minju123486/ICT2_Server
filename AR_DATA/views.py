@@ -133,7 +133,7 @@ for item in data['Sheet1']:
 
 print("Data added successfully!")
 
-for i in range(4):
+for i in range(30):
     try:
         User_data.objects.get(key=i)
         print("Already created")
@@ -416,8 +416,8 @@ def leaderboard(request):
     lst = []
     for i in User_entry:
         dic = dict()
-        dic['userId'] = i.key
-        dic['userName'] = name_list[i.key]
+        dic['userId'] = int(i.key)
+        dic['userName'] = name_list[int(i.key)]
         dic['collectedStamp'] = i.stamp_count
         lst.append(dic)
     return Response(lst, status=200)
