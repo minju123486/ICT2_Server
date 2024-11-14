@@ -23,5 +23,6 @@ urlpatterns = [
     path('stamp_data/', views.stamp_data),
     path('mock_stamp_data/', views.mock_stamp_data),
     path('LLM_QUEST/', views.LLM_QUEST),
-    path('history_view/', views.history_view)
+    path('history_view/', views.history_view),
+    path('leaderboard/', views.leaderboard)
 ]
