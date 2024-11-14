@@ -193,7 +193,7 @@ def stamp_data(request):
     entry_list =[]
     for i in range(80):
         dic = dict()
-        tour_entry = Tour_place.objects.get(id = i)
+        tour_entry = Tour_place.objects.get(place = places[i])
         try: # tour_id, location, timestamp, isCollected;
             stamp_entry = StampTable.objects.get(key = sign_id, tour_id = i)
             dic['tour_id'] = i
